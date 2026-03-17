@@ -21,6 +21,46 @@ const questions = [
     correct: "check",
     name: "q2",
   },
+  {
+    text: "3. Ученик попросил ИИ написать за него всё сочинение и сдал как своё. Это...",
+    options: [
+      { value: "ok", label: "Нормально — все так делают" },
+      { value: "cheat", label: "Нечестно, это академический обман" },
+      { value: "depends", label: "Зависит от оценки учителя" },
+    ],
+    correct: "cheat",
+    name: "q3",
+  },
+  {
+    text: "4. Какой главный риск при использовании ИИ-чатботов для домашних заданий?",
+    options: [
+      { value: "slow", label: "Он отвечает слишком медленно" },
+      { value: "hallucination", label: "ИИ может выдавать правдоподобные, но ложные факты" },
+      { value: "expensive", label: "Это стоит дорого" },
+    ],
+    correct: "hallucination",
+    name: "q4",
+  },
+  {
+    text: "5. Как правильно использовать ИИ в учёбе?",
+    options: [
+      { value: "replace", label: "Заменять им собственное мышление" },
+      { value: "helper", label: "Как помощника для идей и проверки, но думать самому" },
+      { value: "never", label: "Никак — ИИ запрещён в школах" },
+    ],
+    correct: "helper",
+    name: "q5",
+  },
+  {
+    text: "6. Учитель просит не использовать ИИ на контрольной. Что делать?",
+    options: [
+      { value: "ignore", label: "Всё равно использовать — никто не заметит" },
+      { value: "respect", label: "Соблюдать правила и выполнять задание самостоятельно" },
+      { value: "ask", label: "Спросить у одноклассника" },
+    ],
+    correct: "respect",
+    name: "q6",
+  },
 ];
 
 export default function Quiz() {
@@ -36,12 +76,13 @@ export default function Quiz() {
     questions.forEach((q) => {
       if (answers[q.name] === q.correct) score++;
     });
-    if (score === 2) {
-      setResult({ score, msg: "Отлично! Вы понимаете этику ИИ на 100%! 🎉", color: "text-green-600" });
-    } else if (score === 1) {
-      setResult({ score, msg: "Неплохо, но стоит перечитать раздел «Рекомендации».", color: "text-orange-500" });
+    const total = questions.length;
+    if (score === total) {
+      setResult({ score, msg: `Отлично! ${score} из ${total} — вы эксперт по этике ИИ! 🎉`, color: "text-green-600" });
+    } else if (score >= total - 2) {
+      setResult({ score, msg: `Хороший результат! ${score} из ${total}. Стоит перечитать раздел «Рекомендации».`, color: "text-orange-500" });
     } else {
-      setResult({ score, msg: "Вам стоит внимательнее изучить риски использования ИИ.", color: "text-red-500" });
+      setResult({ score, msg: `${score} из ${total}. Вам стоит внимательнее изучить риски использования ИИ.`, color: "text-red-500" });
     }
   };
 
@@ -106,7 +147,7 @@ export default function Quiz() {
             <div className={`mt-6 p-4 bg-white rounded-2xl text-center font-bold text-lg ${result.color}`}>
               {result.score >= 0 && (
                 <div className="text-4xl mb-2">
-                  {result.score === 2 ? "🏆" : result.score === 1 ? "👍" : "📚"}
+                  {result.score === questions.length ? "🏆" : result.score >= questions.length - 2 ? "👍" : "📚"}
                 </div>
               )}
               {result.msg}
