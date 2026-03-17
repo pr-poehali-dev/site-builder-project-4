@@ -65,6 +65,7 @@ const questions = [
 
 export default function Quiz() {
   const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [submitted, setSubmitted] = useState(false);
   const [result, setResult] = useState<null | { score: number; msg: string; color: string }>(null);
 
   const check = () => {
@@ -77,6 +78,7 @@ export default function Quiz() {
       if (answers[q.name] === q.correct) score++;
     });
     const total = questions.length;
+    setSubmitted(true);
     if (score === total) {
       setResult({ score, msg: `Отлично! ${score} из ${total} — вы эксперт по этике ИИ! 🎉`, color: "text-green-600" });
     } else if (score >= total - 2) {
@@ -84,6 +86,34 @@ export default function Quiz() {
     } else {
       setResult({ score, msg: `${score} из ${total}. Вам стоит внимательнее изучить риски использования ИИ.`, color: "text-red-500" });
     }
+  };
+
+  const getOptionStyle = (qName: string, oValue: string, correct: string) => {
+    const selected = answers[qName] === oValue;
+    if (!submitted) {
+      return selected
+        ? "bg-indigo-600 border-indigo-600 text-white"
+        : "bg-white border-transparent hover:border-indigo-200 text-gray-700";
+    }
+    if (oValue === correct) return "bg-green-500 border-green-500 text-white";
+    if (selected && oValue !== correct) return "bg-red-400 border-red-400 text-white";
+    return "bg-white border-transparent text-gray-400";
+  };
+
+  const getRadioStyle = (qName: string, oValue: string, correct: string) => {
+    const selected = answers[qName] === oValue;
+    if (!submitted) {
+      return selected ? "border-white bg-white" : "border-gray-300";
+    }
+    if (oValue === correct) return "border-white bg-white";
+    if (selected && oValue !== correct) return "border-white bg-white";
+    return "border-gray-200";
+  };
+
+  const getDotColor = (qName: string, oValue: string, correct: string) => {
+    if (!submitted) return "bg-indigo-600";
+    if (oValue === correct) return "bg-green-500";
+    return "bg-red-400";
   };
 
   return (
@@ -101,32 +131,38 @@ export default function Quiz() {
         <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-3xl p-8 border border-indigo-100">
           {questions.map((q) => (
             <div key={q.name} className="mb-8">
-              <p className="font-bold text-gray-900 mb-4">{q.text}</p>
+              <div className="flex items-center gap-2 mb-4">
+                <p className="font-bold text-gray-900">{q.text}</p>
+                {submitted && (
+                  <span className="text-lg flex-shrink-0">
+                    {answers[q.name] === q.correct ? "✅" : "❌"}
+                  </span>
+                )}
+              </div>
               <div className="space-y-3">
                 {q.options.map((o) => {
                   const selected = answers[q.name] === o.value;
                   return (
                     <label
                       key={o.value}
-                      className={`flex items-center gap-3 p-4 rounded-2xl cursor-pointer transition-all border-2 ${
-                        selected
-                          ? "bg-indigo-600 border-indigo-600 text-white"
-                          : "bg-white border-transparent hover:border-indigo-200 text-gray-700"
-                      }`}
+                      className={`flex items-center gap-3 p-4 rounded-2xl transition-all border-2 ${
+                        submitted ? "cursor-default" : "cursor-pointer"
+                      } ${getOptionStyle(q.name, o.value, q.correct)}`}
                     >
                       <input
                         type="radio"
                         name={q.name}
                         value={o.value}
                         className="hidden"
+                        disabled={submitted}
                         onChange={() => setAnswers((prev) => ({ ...prev, [q.name]: o.value }))}
                       />
                       <div
-                        className={`w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center ${
-                          selected ? "border-white bg-white" : "border-gray-300"
-                        }`}
+                        className={`w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center ${getRadioStyle(q.name, o.value, q.correct)}`}
                       >
-                        {selected && <div className="w-2 h-2 rounded-full bg-indigo-600" />}
+                        {(selected || (submitted && o.value === q.correct)) && (
+                          <div className={`w-2 h-2 rounded-full ${getDotColor(q.name, o.value, q.correct)}`} />
+                        )}
                       </div>
                       <span className="text-sm font-medium">{o.label}</span>
                     </label>
@@ -136,12 +172,21 @@ export default function Quiz() {
             </div>
           ))}
 
-          <button
-            onClick={check}
-            className="w-full py-4 rounded-2xl font-bold text-white gradient-primary hover:opacity-90 transition-opacity glow-blue"
-          >
-            Узнать результат
-          </button>
+          {!submitted ? (
+            <button
+              onClick={check}
+              className="w-full py-4 rounded-2xl font-bold text-white gradient-primary hover:opacity-90 transition-opacity glow-blue"
+            >
+              Узнать результат
+            </button>
+          ) : (
+            <button
+              onClick={() => { setAnswers({}); setSubmitted(false); setResult(null); }}
+              className="w-full py-4 rounded-2xl font-bold text-white gradient-primary hover:opacity-90 transition-opacity glow-blue"
+            >
+              Пройти заново
+            </button>
+          )}
 
           {result && (
             <div className={`mt-6 p-4 bg-white rounded-2xl text-center font-bold text-lg ${result.color}`}>
