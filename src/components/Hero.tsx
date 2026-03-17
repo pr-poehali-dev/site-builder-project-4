@@ -35,7 +35,7 @@ export default function Hero({ heroImage }: HeroProps) {
       <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
         <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 text-white/80 text-sm mb-8">
           <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-          Проект 10 класс · 2024
+          Проект 10 класс · 2026
         </div>
 
         <h1 className="text-5xl md:text-7xl font-black text-white leading-tight mb-6">

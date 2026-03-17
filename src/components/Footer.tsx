@@ -26,7 +26,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-8 pt-8 border-t border-white/10 text-center text-white/30 text-sm">
-          © 2024 Проект по информатике. Этичность использования ИИ.
+          © 2026 Проект по информатике. Этичность использования ИИ.
         </div>
       </div>
     </footer>
