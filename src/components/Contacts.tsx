@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { QRCodeSVG } from "qrcode.react";
 
 export default function Contacts() {
   const [sent, setSent] = useState(false);
@@ -75,11 +76,16 @@ export default function Contacts() {
             <p className="text-white/60 mb-1">Ученик 10 класса</p>
             <p className="text-white/60 mb-8">Школа №___</p>
 
-            <div className="w-40 h-40 bg-white rounded-2xl flex items-center justify-center">
-              <div className="text-gray-400 text-sm text-center p-4">
-                QR-код
-              </div>
+            <div className="bg-white rounded-2xl p-3">
+              <QRCodeSVG
+                value="https://preview--site-builder-project-4.poehali.dev/"
+                size={148}
+                bgColor="#ffffff"
+                fgColor="#1e1b4b"
+                level="M"
+              />
             </div>
+            <p className="mt-3 text-white/40 text-xs">Отсканируй, чтобы открыть сайт</p>
 
             <div className="mt-8 flex gap-4">
               {["💡", "🔬", "🤖"].map((e, i) => (
