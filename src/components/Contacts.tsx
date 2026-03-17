@@ -78,7 +78,7 @@ export default function Contacts() {
 
             <div className="bg-white rounded-2xl p-3">
               <QRCodeSVG
-                value="https://preview--site-builder-project-4.poehali.dev/"
+                value="https://site-builder-project-4--preview.poehali.dev/"
                 size={148}
                 bgColor="#ffffff"
                 fgColor="#1e1b4b"
